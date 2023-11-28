@@ -36,9 +36,15 @@ def index():
 #localhost:5000/2010/Chicago%20Cubs
 #README: %20 to signify space in URL
 def teams(year, teamName):
-    query = "SELECT team_rank FROM teams WHERE yearid = %s AND team_name = %s"
+    query = "SELECT team_W, team_L, team_rank FROM teams WHERE yearid = %s AND team_name = %s"
     cursor.execute(query, (year, teamName))
-    return jsonify(cursor.fetchall())
+    record = cursor.fetchall()[0]
+    teamW = record[0]
+    teamL = record[1]
+    teamRank = record[2]
+    #return jsonify(cursor.fetchall())
+    return render_template('team.html', teamName=teamName,
+                           teamW = teamW, teamL=teamL, teamRank = teamRank)
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
