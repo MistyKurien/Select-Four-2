@@ -36,15 +36,21 @@ def index():
 #localhost:5000/2010/Chicago%20Cubs
 #README: %20 to signify space in URL
 def teams(year, teamName):
-    query = "SELECT team_W, team_L, team_rank FROM teams WHERE yearid = %s AND team_name = %s"
+    query = ("SELECT CONCAT(nameFirst, ' ', nameLast), "
+             "team_W, team_L, team_rank "
+             "FROM people p join managers m using (playerid)"
+             "JOIN teams t using (teamid, yearid)"
+             " WHERE yearid = %s AND team_name = %s")
     cursor.execute(query, (year, teamName))
+    #TODO: ERROR CHECKING REQUIRED
     record = cursor.fetchall()[0]
-    teamW = record[0]
-    teamL = record[1]
-    teamRank = record[2]
+    manager = record[0]
+    teamW = record[1]
+    teamL = record[2]
+    teamRank = record[3]
     #return jsonify(cursor.fetchall())
     return render_template('team.html', teamName=teamName, year=year,
-                           teamW = teamW, teamL=teamL, teamRank = teamRank)
+                           teamW = teamW, teamL=teamL, teamRank = teamRank, manager=manager)
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
