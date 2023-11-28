@@ -43,7 +43,7 @@ def teams(year, teamName):
     teamL = record[1]
     teamRank = record[2]
     #return jsonify(cursor.fetchall())
-    return render_template('team.html', teamName=teamName,
+    return render_template('team.html', teamName=teamName, year=year,
                            teamW = teamW, teamL=teamL, teamRank = teamRank)
 
 @app.route('/search', methods=['GET', 'POST'])
