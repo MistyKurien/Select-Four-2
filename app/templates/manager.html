@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<style>
+table, th, td {
+  border:1px solid black;
+}
+</style>
+<body>
+
+<h2>Details for the {{ manager }} </h2>
+
+<h1>{% for row in record %}
+        {% for item in row %}
+            {{ item }}
+        {% endfor %}
+        <br>
+    {%  endfor %}
+</h1>
+
+</body>
+</html>

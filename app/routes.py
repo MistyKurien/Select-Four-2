@@ -37,7 +37,7 @@ def index():
 #README: %20 to signify space in URL
 def teams(year, teamName):
     query = ("SELECT CONCAT(nameFirst, ' ', nameLast), "
-             "team_W, team_L, team_rank "
+             "team_W, team_L, team_rank, playerid "
              "FROM people p join managers m using (playerid)"
              "JOIN teams t using (teamid, yearid)"
              " WHERE yearid = %s AND team_name = %s")
@@ -48,9 +48,23 @@ def teams(year, teamName):
     teamW = record[1]
     teamL = record[2]
     teamRank = record[3]
+    playerid = record[4]
     #return jsonify(cursor.fetchall())
     return render_template('team.html', teamName=teamName, year=year,
-                           teamW = teamW, teamL=teamL, teamRank = teamRank, manager=manager)
+                           teamW = teamW, teamL=teamL, teamRank = teamRank, manager=manager,
+                           playerid =playerid)
+
+@app.route('/details/<playerid>')
+def manager(playerid):
+    query = ("select team_name, m.yearid "
+             "from managers m JOIN teams USING (teamid, yearid) "
+             "where playerid = %s")
+    cursor.execute(query, (playerid))
+    # TODO: ERROR CHECKING REQUIRED
+    record = cursor.fetchall()
+    # return jsonify(cursor.fetchall())
+    return render_template('manager.html',
+                           record=record)
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
