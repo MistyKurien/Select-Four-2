@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block content %}
+
 <html>
 <style>
 table, th, td {
@@ -7,15 +11,22 @@ table, th, td {
 </style>
 <body>
 
-<h2>Details for the {{ manager }} </h2>
+<h2>Details for {{ manager }} </h2>
+<table style="width:100%">
 
-<h1>{% for row in record %}
+<tr>
+    <th>Team</th>
+    <th>Year</th>
+</tr>
+
+    {% for row in record %}
+        <tr>
         {% for item in row %}
-            {{ item }}
+            <td>{{ item }}</td>
         {% endfor %}
-        <br>
+        </tr>
     {%  endfor %}
-</h1>
-
+</table>
 </body>
+<{% endblock %}
 </html>

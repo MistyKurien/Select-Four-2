@@ -62,9 +62,14 @@ def manager(playerid):
     cursor.execute(query, (playerid))
     # TODO: ERROR CHECKING REQUIRED
     record = cursor.fetchall()
+    query = ("select CONCAT(nameFirst, ' ', nameLast) "
+             "from people m  "
+             "where playerid = %s")
+    cursor.execute(query, (playerid))
+    manager = cursor.fetchall()[0][0]
     # return jsonify(cursor.fetchall())
     return render_template('manager.html',
-                           record=record)
+                           record=record, manager = manager)
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
