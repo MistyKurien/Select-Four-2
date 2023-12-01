@@ -22,11 +22,18 @@ table, th, td {
     {% for row in record %}
         <tr>
         {% for item in row %}
-            <td>{{ item }}</td>
+            <td>
+                {% if loop.index == 1 %}
+                <a href="{{ url_for("teams", year=row[1], teamName=item) }}">
+                    {{ item }}</a>
+                {% else %}
+                    {{ item }}
+                {% endif %}
+            </td>
         {% endfor %}
         </tr>
     {%  endfor %}
 </table>
 </body>
-<{% endblock %}
+{% endblock %}
 </html>

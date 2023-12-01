@@ -36,8 +36,10 @@ def index():
 #localhost:5000/2010/Chicago%20Cubs
 #README: %20 to signify space in URL
 def teams(year, teamName):
+
+    #requirements
     query = ("SELECT CONCAT(nameFirst, ' ', nameLast), "
-             "team_W, team_L, team_rank, playerid "
+             "team_W, team_L, team_rank, playerid, divid "
              "FROM people p join managers m using (playerid)"
              "JOIN teams t using (teamid, yearid)"
              " WHERE yearid = %s AND team_name = %s")
@@ -49,10 +51,30 @@ def teams(year, teamName):
     teamL = record[2]
     teamRank = record[3]
     playerid = record[4]
+    division = record[5]
+
+    if division == "W":
+        division = "West"
+    elif division == "E":
+        division = "East"
+    elif division == "C":
+        division = "Central"
+    else:
+        division = "Not Available"
+
+
+
     #return jsonify(cursor.fetchall())
+
+    #calculate pythagorean winning percentage for a year
+    query = ("SELECT ((team_R * 2) / ((team_R ^ 2) + (team_RA ^2))) * 100"
+             " as perc from teams where yearid = %s and team_name = %s")
+    cursor.execute(query, (year, teamName))
+    projection = cursor.fetchone()[0]
+
     return render_template('team.html', teamName=teamName, year=year,
                            teamW = teamW, teamL=teamL, teamRank = teamRank, manager=manager,
-                           playerid =playerid)
+                           playerid =playerid, projection=projection, division=division)
 
 @app.route('/details/<playerid>')
 def manager(playerid):
@@ -70,6 +92,26 @@ def manager(playerid):
     # return jsonify(cursor.fetchall())
     return render_template('manager.html',
                            record=record, manager = manager)
+
+
+@app.route('/division/<year>/<division>')
+def division(year, division):
+    divid = division[0]
+    query = ("select team_rank, team_name from teams "
+             "where team_rank < 4 and "
+             "divid = %s and yearid = %s and lgid='AL' "
+             "order by team_rank")
+    cursor.execute(query, (divid, year))
+    ALrecord = cursor.fetchall()
+    query = ("select team_rank, team_name from teams "
+             "where team_rank < 4 and "
+             "divid = %s and yearid = %s and lgid='NL' "
+             "order by team_rank")
+    cursor.execute(query, (divid, year))
+    NLrecord = cursor.fetchall()
+    return render_template('division.html',
+                           year=year, division=division,
+                           ALrecord=ALrecord, NLrecord=NLrecord)
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():

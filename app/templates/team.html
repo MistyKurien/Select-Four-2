@@ -18,15 +18,19 @@ table, th, td {
         <th>Team Wins</th>
         <th>Team Losses</th>
         <th>Manager</th>
+        <th>Division</th>
   </tr>
   <tr>
-        <td>{{teamRank}}</td>
-        <td>{{teamW}}</td>
-        <td>{{teamL}}</td>
+      <td>{{teamRank}}</td>
+      <td>{{teamW}}</td>
+      <td>{{teamL}}</td>
       <td><a href="http://localhost:5000/details/{{ playerid }}">{{ manager }}</a></td>
+      <td><a href="{{ url_for('division', year=year, division=division) }}">{{ division }}</a></td>
   </tr>
 
 </table>
+
+<h3>Pythagorean Projection for {{ teamName }} in {{ year }}: {{ projection }}%</h3>
 
 </body>
 {% endblock %}

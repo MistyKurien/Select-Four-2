@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+{% block content %}
+<html lang="en">
+<style>
+table, th, td {
+  border:1px solid black;
+}
+</style>
+<body>
+
+<h2>Standings for the {{ year }} {{ division }} Division </h2>
+<table style="width:100%">
+
+<h3>American League</h3>
+<tr>
+    <th>Rank</th>
+    <th>Team Name</th>
+</tr>
+
+    {% for row in ALrecord %}
+        <tr>
+        {% for item in row %}
+            <td>
+                {% if loop.index == 2 %}
+                <a href="{{ url_for("teams", year=year,teamName=item) }}">
+                    {{ item }}</a>
+                {% else %}
+                    {{ item }}
+                {% endif %}
+            </td>
+        {% endfor %}
+        </tr>
+    {%  endfor %}
+</table>
+
+<table style="width:100%">
+
+<h3>National League</h3>
+<tr>
+    <th>Rank</th>
+    <th>Team Name</th>
+</tr>
+
+    {% for row in NLrecord %}
+        <tr>
+        {% for item in row %}
+            <td>
+                {% if loop.index == 2 %}
+                <a href="{{ url_for("teams", year=year, teamName=item) }}">
+                    {{ item }}</a>
+                {% else %}
+                    {{ item }}
+                {% endif %}
+            </td>
+        {% endfor %}
+        </tr>
+    {%  endfor %}
+</table>
+
+</body>
+{%  endblock %}
+</html>
