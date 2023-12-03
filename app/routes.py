@@ -13,42 +13,14 @@ from sqlalchemy.orm import aliased
 from werkzeug.security import generate_password_hash
 from config import Config
 
-@app.route('/')
-@app.route('/index')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
+
 @login_required
 def index():
-    return render_template('index.html', title='Home Page')
-    #just testing
-    # cursor.execute("SELECT * from managers LIMIT 10") #README: i just added this to test!
-    # res = cursor.fetchall()
-    # return jsonify(res) #README: notice how i am using cursor which is defined in __init__.py
-    #return "hello world"
-    #return "Connected to mariadb"
-    # user = {'username' : 'Misty_Kurien1'}
-    # posts = [
-    #     {
-    #         'author': {'username': 'Salma'},
-    #         'body' : 'I love databases'
-    #     },
-    #     {
-    #         'author' : {'username' : 'Ciara'},
-    #         'body': 'Elmos world'
-    #     }
-    #
-    # ]
-    # return render_template('index.html', title='Home Page', posts=posts)
-
-# @app.route('/<year>/<teamName>')
-# #localhost:5000/2010/Chicago%20Cubs
-# #README: %20 to signify space in URL
-# def teams(year, teamName):
-#     query = "SELECT team_rank FROM teams WHERE yearid = %s AND team_name = %s"
-#     cursor.execute(query, (year, teamName))
-#     return jsonify(cursor.fetchall())
+    return redirect(url_for('search'))
 
 @app.route('/details/<year>/<teamName>')
-#localhost:5000/2010/Chicago%20Cubs
-#README: %20 to signify space in URL
 def teams(year, teamName):
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
 
@@ -133,12 +105,13 @@ def division(year, division):
                            ALrecord=ALrecord, NLrecord=NLrecord)
 
 @app.route('/search', methods=['GET', 'POST'])
+#@app.route('/', methods=['GET', 'POST'])
 def search():
     form = SearchForm()
     if form.validate_on_submit():
             return redirect(url_for('teams', year=form.year.data, teamName =form.teamName.data))
 
-    return render_template('search.html', title='Search', form=form)
+    return render_template('search.html', title='Home Page', form=form)
 
 @app.route('/login', methods=['GET','POST'])
 def login():

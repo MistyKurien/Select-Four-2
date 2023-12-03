@@ -9,7 +9,9 @@
     </head>
     <body>
         <div>The Select Four:
-            <a href="{{ url_for('index')}}">Home</a>
+            {%  if (title!='Home Page') %}
+            <a href="{{ url_for('index')}}">Search</a>
+            {% endif %}
             {% if current_user.is_anonymous %}
             <a href="{{ url_for('login')}}">Login</a>
             {% else %}
@@ -27,6 +29,7 @@
         </ul>
         {% endif %}
         {% endwith %}
+
         {% block content %}{% endblock %}
     </body>
 </html>
