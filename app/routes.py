@@ -4,7 +4,7 @@ from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, RegisterAdminForm, SearchForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import Users
+from app.models import Users, Queries
 #from app import db
 from datetime import datetime
 from werkzeug.urls import url_parse
@@ -13,40 +13,14 @@ from sqlalchemy.orm import aliased
 from werkzeug.security import generate_password_hash
 from config import Config
 
-@app.route('/')
-@app.route('/index')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
-    return render_template('index.html', title='Home Page')
-    #just testing
-    # cursor.execute("SELECT * from managers LIMIT 10") #README: i just added this to test!
-    # res = cursor.fetchall()
-    # return jsonify(res) #README: notice how i am using cursor which is defined in __init__.py
-    #return "hello world"
-    #return "Connected to mariadb"
-    # user = {'username' : 'Misty_Kurien1'}
-    # posts = [
-    #     {
-    #         'author': {'username': 'Salma'},
-    #         'body' : 'I love databases'
-    #     },
-    #     {
-    #         'author' : {'username' : 'Ciara'},
-    #         'body': 'Elmos world'
-    #     }
-    #
-    # ]
-    # return render_template('index.html', title='Home Page', posts=posts)
-
-# @app.route('/<year>/<teamName>')
-# #localhost:5000/2010/Chicago%20Cubs
-# #README: %20 to signify space in URL
-# def teams(year, teamName):
-#     query = "SELECT team_rank FROM teams WHERE yearid = %s AND team_name = %s"
-#     cursor.execute(query, (year, teamName))
-#     return jsonify(cursor.fetchall())
+    return redirect(url_for('search'))
 
 @app.route('/details/<year>/<teamName>')
+@login_required
 #localhost:5000/2010/Chicago%20Cubs
 #README: %20 to signify space in URL
 def teams(year, teamName):
@@ -87,12 +61,18 @@ def teams(year, teamName):
     with engine.connect() as con:
         projection = con.execute(query, {"year": year, "teamName": teamName}).fetchone()[0]
 
+    #store the query ran into the queries table
+    query = Queries(body="Search for team = " + teamName + ", year = " + year, user_id = current_user.id)
+    db.session.add(query)
+    db.session.commit()
+
     return render_template('team.html', teamName=teamName, year=year,
                            teamW = teamW, teamL=teamL, teamRank = teamRank, manager=manager,
                            playerid =playerid, projection=projection, division=division)
 
 #TODO fix this
 @app.route('/details/<playerid>')
+@login_required
 def manager(playerid):
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
     query = text("select team_name, m.yearid "
@@ -106,11 +86,16 @@ def manager(playerid):
                  "from people m  "
                  "where playerid = :playerid")
         manager = con.execute(query, {"playerid": playerid}).fetchall()[0][0]
+
+    query = Queries(body="Search for manager = " + playerid, user_id=current_user.id)
+    db.session.add(query)
+    db.session.commit()
     return render_template('manager.html', record=record, manager = manager)
 
 
 #TODO fix this
 @app.route('/division/<year>/<division>')
+@login_required
 def division(year, division):
     divid = division[0]
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
@@ -128,17 +113,23 @@ def division(year, division):
                  "order by team_rank")
 
         NLrecord = con.execute(query, {"divid": divid, "year": year}).fetchall()
+
+    query = Queries(body="Search for division = " + divid + ", year = " + year, user_id=current_user.id)
+    db.session.add(query)
+    db.session.commit()
+
     return render_template('division.html',
                            year=year, division=division,
                            ALrecord=ALrecord, NLrecord=NLrecord)
 
 @app.route('/search', methods=['GET', 'POST'])
+@login_required
 def search():
     form = SearchForm()
     if form.validate_on_submit():
             return redirect(url_for('teams', year=form.year.data, teamName =form.teamName.data))
 
-    return render_template('search.html', title='Search', form=form)
+    return render_template('search.html', title='Home Page', form=form)
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -225,3 +216,14 @@ def edit_profile():
         form.about_me.data = current_user.about_me
     return render_template('edit_profile.html', title='Edit Profile',
                            form=form)
+
+@app.route('/view_logs', methods = ['GET'])
+@login_required
+def view_logs():
+    users = Users.query.all()
+    user_queries = {}
+    for user in users:
+        queries = Queries.query.filter_by(user_id=user.id).all()
+        user_queries[user.id] = {"user": user, "queries": queries}
+
+    return render_template('view_logs.html', user_queries=user_queries)

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+table, th, td {
+  border:1px solid black;
+}
+</style>
+    <h1> View All User Logs </h1>
+    <table style="width:100%">
+        <tr>
+            <th>User</th>
+            <th>Queries</th>
+            <th>Total Queries</th>
+        </tr>
+        {% for user_id, data in user_queries.items() %}
+            <tr>
+                <td>
+                    <h2>{{ data.user.username }}</h2>
+                    {% if data.user.about_me %}<p>{{ data.user.about_me }}</p>{% endif %}
+                    {% if data.user.last_seen %}<p>Last seen on: {{ data.user.last_seen }}</p>{% endif %}
+                </td>
+                <td>
+                    <ul>
+                        {% for query in data.queries %}
+                            <li>{{ query.body }}  @  {{ query.timestamp }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>{{ data.queries|length }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <hr>
+{% endblock %}

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 {% extends "base.html" %}
     {% block content %}
-        <h1>Hello, {{ current_user.username }}!</h1>
+        <h1>Shouldn't be here, {{ current_user.username }}!</h1>
         <p><a href="{{ url_for('search') }}">Search teams</a></p>
     {% endblock %}
 <h1>SELECT FOUR Database</h1>

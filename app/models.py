@@ -23,9 +23,22 @@ class Users(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def is_admin(self):
+        print(self.admin)
+        return self.admin
+
 @login.user_loader
 def load_user(id):
     return Users.query.get(int(id))
+
+class Queries(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.String(140))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    def __repr__(self):
+        return '<Queries {}>'.format(self.body)
 
 # class Post(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)
