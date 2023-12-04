@@ -11,14 +11,12 @@ table, th, td {
 </style>
 <body>
 
-<h2>Details for {{ manager }} </h2>
+<h2>Manager Details for {{ manager }} </h2>
 <table style="width:100%">
-
 <tr>
     <th>Team</th>
     <th>Year</th>
 </tr>
-
     {% for row in record %}
         <tr>
         {% for item in row %}
@@ -34,6 +32,36 @@ table, th, td {
         </tr>
     {%  endfor %}
 </table>
+{% if record2 %}
+        <h2>Player Details For {{ manager }}</h2>
+    <table style="width:100%">
+
+<tr>
+    <th>Team</th>
+    <th>Year</th>
+    <th>Position</th>
+</tr>
+
+    {% for row in record2 %}
+        <tr>
+        {% for item in row %}
+            <td>
+                {% if loop.index == 1 %}
+                <a href="{{ url_for("teams", year=row[1], teamName=item) }}">
+                    {{ item }}
+                </a>
+                {% else %}
+                    {{ item }}
+                {% endif %}
+            </td>
+        {% endfor %}
+        </tr>
+    {%  endfor %}
+
+
+</table>
+
+{% endif %}
 </body>
 {% endblock %}
 </html>

@@ -40,8 +40,6 @@ def teams(year, teamName):
             return redirect(url_for('search'))
         record = record[0]
 
-
-
     manager = record[0]
     teamW = record[1]
     teamL = record[2]
@@ -95,10 +93,37 @@ def manager(playerid):
     query = Queries(body="Search for manager = " + playerid, user_id=current_user.id)
     db.session.add(query)
     db.session.commit()
-    return render_template('manager.html', record=record, manager = manager)
 
+    #check if the manager is also a player
+    query = text("select distinct playerid "
+                 "from managers where plyrMgr = 'y' "
+                 "and playerid = :playerid")
 
-#TODO fix this
+    with engine.connect() as con:
+        result = con.execute(query, {"playerid": playerid}).fetchall()
+        print(playerid)
+        print("Hellow")
+        print(result)
+        record2 = []
+        if(result):
+            print(record)
+            print("\n\n")
+
+            query = text("select team_name, m.yearid, m.position "
+                         "from fielding m JOIN teams USING (teamid, yearid) "
+                         "where playerid = :playerid")
+
+            with engine.connect() as con:
+                record2 = con.execute(query, {"playerid": playerid}).fetchall()
+
+                # TODO: ERROR CHECKING REQUIRED
+                query = text("select CONCAT(nameFirst, ' ', nameLast) "
+                             "from people m  "
+                             "where playerid = :playerid")
+                manager = con.execute(query, {"playerid": playerid}).fetchall()[0][0]
+
+    return render_template('manager.html', record=record, record2=record2, manager = manager)
+
 @app.route('/division/<year>/<division>')
 @login_required
 def division(year, division):
