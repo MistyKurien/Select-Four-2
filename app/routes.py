@@ -34,9 +34,14 @@ def teams(year, teamName):
              " WHERE yearid = :year AND team_name = :teamName")
 
     with engine.connect() as con:
-        record = con.execute(query, {"year": year, "teamName": teamName}).fetchall()[0]
+        record = con.execute(query, {"year": year, "teamName": teamName}).fetchall()
+        if record == []:
+            flash('Search yielded no results')
+            return redirect(url_for('search'))
+        record = record[0]
 
-    #TODO: ERROR CHECKING REQUIRED
+
+
     manager = record[0]
     teamW = record[1]
     teamL = record[2]
