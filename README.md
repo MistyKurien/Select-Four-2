@@ -1,52 +1,65 @@
-# CSI3335 Project Virtual Environment
+# The Select Four
 
-This repository provides a virtual environment setup with specified dependencies for student projects in the CSI3335 course. **Please use Python 3.10 and above**
+For this database project, we created The Select Four database to reflect updates and changes made to the baseball
+database provided in CSI 3335.
 
-## Description
+## Authors
 
-This virtual environment contains essential Python libraries and frameworks required for the project. The `requirements.txt` file lists all the dependencies.
+- Salma Battisha
+- Misty Kurien
+- Priscilla Leafblad
+- Ciara Woodahl
 
-## Instructions
+## Installation
 
-
-1. **Clone the Repository**:
-
-```bash
-git clone https://github.com/sanjelarun/csi3335-project-venv.git
-cd csi3335-project-venv
-```
-
-2. **Create a Virtual Environment**
-
-**For Windows**
-```bash
-python -m venv project_env
-```
-**For Linux/MacOs**
-```bash
-python3 -m venv project_env
-
-```
-3. **Activate the Virtual Environment**
-
-**For Windows**
-```bash
-.\project_env\Scripts\activate
-```
-**For Linux/MacOs**
-```bash
-source project_env/bin/activate
-```
-
-4. **Install the dependencies**
-```bash
-pip install -r requirements.txt
-```
-
-## Usage
-
-Once the virtual environment is activated and dependencies are installed, you can start working on your project within this environment. Remember to deactivate the virtual environment once you're done:
+Use our setup sql file to load the database.
 
 ```bash
-deactivate
+\. SQLSetup_TheSelectFour.sql
+
+MariaDB [TheSelectFour]> show databases;
+
+CREATE DATABASE TheSelectFour;
 ```
+
+All our files work within the provided virtual environment.
+The csi3335F23.py file includes the setup for the running database.
+
+This is the pip freeze for reference:
+
+```bash
+alembic==1.12.0
+blinker==1.6.2
+click==8.1.7
+colorama==0.4.6
+scikit-learn==1.3.2
+scipy==1.11.4
+six==1.16.0
+SQLAlchemy==2.0.21
+threadpoolctl==3.2.0
+typing_extensions==4.8.0
+tzdata==2023.3
+Werkzeug==2.3.7
+WTForms==3.0.1
+
+```
+
+## Webpage Features
+
+- User registration
+- User login and logout
+- User account with editable bio
+- User's last seen time is stored and accessible by admin
+- Secure access to search pages; must be logged in to view pages
+- Admin registration with required security key "123"
+- Admin view logs functionality showing all executed queries for each user
+- Pythagorean projections of team wins shown
+- Divisions and division standings shown
+- Manager details are shown
+- Managers who are also players have both their manager and player information shown
+
+## Database Changes
+
+- 2022 data loaded onto the database
+- 2023 awards data added
+- Lost data in the updated Lahman database restored in Batting, Parks, People, PitchingPost, and Schools
