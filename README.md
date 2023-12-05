@@ -15,11 +15,15 @@ database provided in CSI 3335.
 Use our setup sql file to load the database.
 
 ```bash
-\. SQLSetup_TheSelectFour.sql
+\. SQLSetup_selectfour.sql
 
-MariaDB [TheSelectFour]> show databases;
+MariaDB [selectfour]> show databases;
 
-CREATE DATABASE TheSelectFour;
+CREATE DATABASE selectfour;
+
+use selectfour;
+
+\. selectfour.sql
 ```
 
 All our files work within the provided virtual environment.
@@ -51,6 +55,7 @@ WTForms==3.0.1
 - User account with editable bio
 - User's last seen time is stored and accessible by admin
 - Secure access to search pages; must be logged in to view pages
+- All teams are linked to their respective information for the year displayed
 - Admin registration with required security key "123"
 - Admin view logs functionality showing all executed queries for each user
 - Pythagorean projections of team wins shown
@@ -62,4 +67,7 @@ WTForms==3.0.1
 
 - 2022 data loaded onto the database
 - 2023 awards data added
+- Cleaned data from CSVs and rearranged columns to match structure of our database
+- Eliminated duplicate records and ensured no loss of data
 - Lost data in the updated Lahman database restored in Batting, Parks, People, PitchingPost, and Schools
+- ID names changed for normalization purposes and to ensure that JOINs work seamlessly
