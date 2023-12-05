@@ -47,7 +47,15 @@ WTForms==3.0.1
 - Admin registration with required security key "123"
 - Admin view logs functionality showing all executed queries for each user
 - Pythagorean projections of team wins shown
-- Divivions and division standings shown
+- Divisions and division standings shown
+- Manager details are shown
+- Managers who are also players have both their manager and player information shown
+
+
+## Database Changes
+- 2022 data loaded onto the database
+- 2023 awards data added
+-
 
 
 
